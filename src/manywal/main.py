@@ -3,7 +3,6 @@ from .services import db_add_user, db_list_users
 from .logging_setup import setup_logging
 
 logger = setup_logging()
-logger.debug("Logger initialized.")
 
 app = typer.Typer(help="ManyWal CLI - A tool for managing your wallet.")
 
