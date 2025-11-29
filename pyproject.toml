@@ -8,6 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "typer (>=0.20.0,<0.21.0)",
+    "black (>=25.11.0,<26.0.0)",
+    "ruff (>=0.14.7,<0.15.0)"
 ]
 
 [tool.poetry]
@@ -16,3 +19,6 @@ packages = [{include = "manywal", from = "src"}]
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+manywal = "src.manywal.main:app"
