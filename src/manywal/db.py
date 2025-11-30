@@ -35,10 +35,13 @@ def init_db():
 
             conn.commit()
             logger.info(f"Database initialized successfully at {DB_PATH}")
+            return True
     except sqlite3.Error as e:
         logger.error(f"SQLite error during DB initialization: {e}")
+        return False
     except Exception as e:
         logger.exception(f"Unexpected error during DB initialization: {e}")
+        return False
 
 if __name__ == "__main__":
     init_db()
