@@ -1,7 +1,7 @@
 import typer
 from rich.table import Table
 from rich.console import Console
-from .services import db_add_user, db_list_users, db_add_transaction, db_get_transactions
+from .services import *
 from .logging_setup import setup_logging
 from .db import init_db
 
@@ -19,13 +19,13 @@ def create_db():
 @app.command()
 def add_user(name: str):
     """Add a user"""
-    if db_add_user(name):
+    if create_user(name):
         logger.info("user added")
 
 @app.command()
-def get_list_users():
+def get_user_list():
     """Get list of all users"""
-    rows = db_list_users()
+    rows = list_users()
     if not rows:
         console.print("[red]No users found.[/red]")
         raise typer.Exit()
@@ -38,13 +38,13 @@ def get_list_users():
 @app.command()
 def add_transaction(username: str, amount:float, shop: str, category: str, transaction_date:str):
     """Insert a new transaction"""
-    if db_add_transaction(username, amount, shop, category, transaction_date):
+    if create_transaction(username, amount, shop, category, transaction_date):
         logger.info("transaction added")
 
 @app.command()
-def get_transactions(username: str, start_date:str, end_date:str):
+def get_transaction_list(username: str, start_date:str, end_date:str):
     """get all transactions for a user  between start_date and end_date"""
-    rows = db_get_transactions(username, start_date, end_date)
+    rows = list_transactions(username, start_date, end_date)
     if not rows:
         console.print("[red]No transactions found.[/red]")
         raise typer.Exit()

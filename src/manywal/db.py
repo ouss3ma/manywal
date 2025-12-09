@@ -43,7 +43,7 @@ def init_db():
         logger.exception(f"Unexpected error during DB initialization: {e}")
         return False
 
-def insert_user(name: str) -> None:
+def db_insert_user(name: str) -> None:
     with sqlite3.connect(DB_PATH) as connection:
         cursor = connection.cursor()
         cursor.execute(
@@ -52,7 +52,7 @@ def insert_user(name: str) -> None:
         )
         connection.commit()
 
-def select_users() -> list:
+def db_select_users() -> list:
     with sqlite3.connect(DB_PATH) as connection:
         cursor = connection.cursor()
         cursor.execute(
@@ -61,7 +61,7 @@ def select_users() -> list:
         users = cursor.fetchall()
         return [user[0] for user in users] 
 
-def get_user_id(username: str) -> int | None:
+def db_select_user_id(username: str) -> int | None:
     """Return user_id for a username or None."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
@@ -69,7 +69,7 @@ def get_user_id(username: str) -> int | None:
         row = cursor.fetchone()
         return row[0] if row else None
 
-def insert_transaction(user_id: int, amount: float, shop: str, category: str, transaction_date: str) -> int:
+def db_insert_transaction(user_id: int, amount: float, shop: str, category: str, transaction_date: str) -> int:
     """Insert a transaction row. Returns True on success."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
@@ -83,7 +83,7 @@ def insert_transaction(user_id: int, amount: float, shop: str, category: str, tr
         conn.commit()
         return cursor.lastrowid
 
-def select_transaction(user_id: int, start_date: str, end_date: str) -> list:
+def db_select_transactions(user_id: int, start_date: str, end_date: str) -> list:
     """Return all transactions for a user between start_date and end_date."""
     with sqlite3.connect(DB_PATH) as conn:
         cursor = conn.cursor()
