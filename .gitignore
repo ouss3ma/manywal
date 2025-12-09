@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .venv/
 poetry.lock
+manywal.db
+logs/
+data/
