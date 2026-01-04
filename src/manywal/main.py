@@ -59,6 +59,29 @@ def get_transaction_list(username: str, start_date:str, end_date:str):
 
     console.print(table)
 
+@app.command()
+def add_income(username: str, amount:float, source: str, transaction_date:str):
+    """Insert a new income"""
+    if create_income(username, amount, source, transaction_date):
+        logger.info("income added")
+
+@app.command()
+def get_income_list(username: str, start_date:str, end_date:str):
+    """get all incomes for a user  between start_date and end_date"""
+    rows = list_incomes(username, start_date, end_date)
+    if not rows:
+        console.print("[red]No incomes found.[/red]")
+        raise typer.Exit()
+    table = Table(title=f"Incomes for {username}")
+    table.add_column("Amount")
+    table.add_column("Source")
+    table.add_column("Date")
+
+    for r in rows:
+        table.add_row(*[str(x) for x in r])
+
+    console.print(table)
+
 def main():
     app()
 
