@@ -4,6 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 DB_PATH = Path(__file__).parent.parent.parent / "data" / "manywal.db"
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
@@ -28,6 +29,17 @@ def init_db():
                 amount REAL NOT NULL,
                 shop TEXT,
                 category TEXT,
+                transaction_date DATE,
+                FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+            """)
+
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS incomes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                amount REAL NOT NULL,
+                source TEXT,
                 transaction_date DATE,
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )
@@ -91,6 +103,36 @@ def db_select_transactions(user_id: int, start_date: str, end_date: str) -> list
             """
             SELECT amount, shop, category, transaction_date
             FROM transactions
+            WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
+            ORDER BY transaction_date ASC
+            """,
+            (user_id, start_date, end_date)
+        )
+        transactions = cursor.fetchall()
+        return transactions
+
+def db_insert_income(user_id: int, amount: float, source: str, transaction_date: str) -> int:
+    """Insert an income row. Returns True on success."""
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO incomes (user_id, amount, source, transaction_date)
+            VALUES (?, ?, ?, ?)
+            """,
+            (user_id, amount, source, transaction_date)
+        )
+        conn.commit()
+        return cursor.lastrowid
+
+def db_select_incomes(user_id: int, start_date: str, end_date: str) -> list:
+    """Return all incomes for a user between start_date and end_date."""
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT amount, source, transaction_date
+            FROM incomes
             WHERE user_id = ? AND transaction_date BETWEEN ? AND ?
             ORDER BY transaction_date ASC
             """,
